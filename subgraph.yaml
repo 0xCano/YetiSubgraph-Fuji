@@ -1,0 +1,65 @@
+specVersion: 0.0.1
+schema:
+  file: ./schema.graphql
+dataSources:
+  - kind: ethereum
+    name: Contract
+    network: fuji
+    source:
+      address: "0x6387C0E385196FEcb43D5fe37EBe9777B790a882"
+      abi: Contract
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - ActivePoolAddressChanged
+        - CollSurplusPoolAddressChanged
+        - DefaultPoolAddressChanged
+        - GasPoolAddressChanged
+        - OwnershipTransferred
+        - PriceFeedAddressChanged
+        - SYETIAddressChanged
+        - SortedTrovesAddressChanged
+        - StabilityPoolAddressChanged
+        - TroveCreated
+        - TroveManagerAddressChanged
+        - TroveUpdated
+        - TroveUpdated1
+        - YUSDBorrowingFeePaid
+        - YUSDTokenAddressChanged
+      abis:
+        - name: Contract
+          file: ./abis/Contract.json
+      eventHandlers:
+        - event: ActivePoolAddressChanged(address)
+          handler: handleActivePoolAddressChanged
+        - event: CollSurplusPoolAddressChanged(address)
+          handler: handleCollSurplusPoolAddressChanged
+        - event: DefaultPoolAddressChanged(address)
+          handler: handleDefaultPoolAddressChanged
+        - event: GasPoolAddressChanged(address)
+          handler: handleGasPoolAddressChanged
+        - event: OwnershipTransferred(indexed address,indexed address)
+          handler: handleOwnershipTransferred
+        - event: PriceFeedAddressChanged(address)
+          handler: handlePriceFeedAddressChanged
+        - event: SYETIAddressChanged(address)
+          handler: handleSYETIAddressChanged
+        - event: SortedTrovesAddressChanged(address)
+          handler: handleSortedTrovesAddressChanged
+        - event: StabilityPoolAddressChanged(address)
+          handler: handleStabilityPoolAddressChanged
+        - event: TroveCreated(indexed address,uint256)
+          handler: handleTroveCreated
+        - event: TroveManagerAddressChanged(address)
+          handler: handleTroveManagerAddressChanged
+        - event: TroveUpdated(indexed address,uint256,address[],uint256[],uint8)
+          handler: handleTroveUpdated
+        - event: TroveUpdated(indexed address,uint256,uint256,uint8)
+          handler: handleTroveUpdated1
+        - event: YUSDBorrowingFeePaid(indexed address,uint256)
+          handler: handleYUSDBorrowingFeePaid
+        - event: YUSDTokenAddressChanged(address)
+          handler: handleYUSDTokenAddressChanged
+      file: ./src/mapping.ts
