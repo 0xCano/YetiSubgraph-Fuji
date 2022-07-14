@@ -1,65 +1,176 @@
-specVersion: 0.0.1
+specVersion: 0.0.5
+description: Test Subgraph for Yeti-Fuji
+repository: https://github.com/0xCano/YetiSubgraph
 schema:
   file: ./schema.graphql
 dataSources:
-  - kind: ethereum
-    name: Contract
+  - kind: ethereum/contract
+    name: BorrowerOperations
     network: fuji
     source:
-      address: "0x6387C0E385196FEcb43D5fe37EBe9777B790a882"
-      abi: Contract
+      address: '0xBBbbbbbBBBBeC8bF32635374c0717C44B5c535eF'
+      abi: BorrowerOperations
+      startBlock: 10224979
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
-        - ActivePoolAddressChanged
-        - CollSurplusPoolAddressChanged
-        - DefaultPoolAddressChanged
-        - GasPoolAddressChanged
-        - OwnershipTransferred
-        - PriceFeedAddressChanged
-        - SYETIAddressChanged
-        - SortedTrovesAddressChanged
-        - StabilityPoolAddressChanged
-        - TroveCreated
-        - TroveManagerAddressChanged
-        - TroveUpdated
-        - TroveUpdated1
-        - YUSDBorrowingFeePaid
-        - YUSDTokenAddressChanged
+        - Transfers
       abis:
-        - name: Contract
-          file: ./abis/Contract.json
+        - name: BorrowerOperations
+          file: ./abis/BorrowerOperations.json
+        - name: TroveManager
+          file: ./abis/TroveManager.json
       eventHandlers:
-        - event: ActivePoolAddressChanged(address)
-          handler: handleActivePoolAddressChanged
-        - event: CollSurplusPoolAddressChanged(address)
-          handler: handleCollSurplusPoolAddressChanged
-        - event: DefaultPoolAddressChanged(address)
-          handler: handleDefaultPoolAddressChanged
-        - event: GasPoolAddressChanged(address)
-          handler: handleGasPoolAddressChanged
-        - event: OwnershipTransferred(indexed address,indexed address)
-          handler: handleOwnershipTransferred
-        - event: PriceFeedAddressChanged(address)
-          handler: handlePriceFeedAddressChanged
-        - event: SYETIAddressChanged(address)
-          handler: handleSYETIAddressChanged
-        - event: SortedTrovesAddressChanged(address)
-          handler: handleSortedTrovesAddressChanged
-        - event: StabilityPoolAddressChanged(address)
-          handler: handleStabilityPoolAddressChanged
-        - event: TroveCreated(indexed address,uint256)
-          handler: handleTroveCreated
-        - event: TroveManagerAddressChanged(address)
-          handler: handleTroveManagerAddressChanged
         - event: TroveUpdated(indexed address,uint256,address[],uint256[],uint8)
           handler: handleTroveUpdated
-        - event: TroveUpdated(indexed address,uint256,uint256,uint8)
-          handler: handleTroveUpdated1
-        - event: YUSDBorrowingFeePaid(indexed address,uint256)
-          handler: handleYUSDBorrowingFeePaid
-        - event: YUSDTokenAddressChanged(address)
-          handler: handleYUSDTokenAddressChanged
-      file: ./src/mapping.ts
+        # - event: YUSDBorrowingFeePaid(indexed address,uint256)
+        #   handler: handleYUSDPaid
+        # - event: VariableFeePaid(indexed address,uint256)
+        #   handler: handleVariablePaid
+      file: ./src/BorrowerOperationsMapping.ts
+  - kind: ethereum/contract
+    name: Lever
+    network: fuji
+    source:
+      address: '0x3DF81a574418349707d0B7328935952D69D05892'
+      abi: Lever
+      startBlock: 10224979
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Transfers
+      abis:
+        - name: Lever
+          file: ./abis/Lever.json
+      eventHandlers:
+        - event: Swap(address,address,address,uint256,uint256,uint256)
+          handler: handleSwap
+        # - event: YUSDBorrowingFeePaid(indexed address,uint256)
+        #   handler: handleYUSDPaid
+        # - event: VariableFeePaid(indexed address,uint256)
+        #   handler: handleVariablePaid
+      file: ./src/LeverMapping.ts
+  # - kind: ethereum/contract
+  #   name: TroveManager
+  #   network: avalanche
+  #   source:
+  #     address: '0x000000000000614c27530d24B5f039EC15A61d8d'
+  #     abi: TroveManager
+  #     startBlock: 13021859
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.6
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - Transfers
+  #     abis:
+  #       - name: TroveManager
+  #         file: ./abis/TroveManager.json
+  #     eventHandlers:
+  #       - event: TroveUpdated(indexed address,uint256,address[],uint256[],uint8)
+  #         handler: handleTroveUpdated
+  #       - event: TotalStakesUpdated(address,uint256)
+  #         handler: handleTotalStakesUpdated
+  #     file: ./src/TroveManagerMapping.ts
+  # - kind: ethereum/contract
+  #   name: TroveManagerRedemptions
+  #   network: avalanche
+  #   source:
+  #     address: '0x00000000000d9c2f60d8e82F2d1C2bed5008DD7d'
+  #     abi: TroveManagerRedemptions
+  #     startBlock: 13021859
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.6
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - Transfers
+  #     abis:
+  #       - name: TroveManagerRedemptions
+  #         file: ./abis/TroveManagerRedemptions.json
+  #       - name: TroveManager
+  #         file: ./abis/TroveManager.json
+  #     eventHandlers:
+  #       - event: TroveUpdated(indexed address,uint256,address[],uint256[],uint8)
+  #         handler: handleTroveUpdated
+  #       - event: Redemption(uint256,uint256,uint256,address[],uint256[])
+  #         handler: handleRedemption
+  #     file: ./src/redemptionMapping.ts
+  # - kind: ethereum/contract
+  #   name: TroveManagerLiquidations
+  #   network: avalanche
+  #   source:
+  #     address: '0x0000000000aDCd24b833604068cBbbb2EEb3a2a3'
+  #     abi: TroveManagerLiquidations
+  #     startBlock: 13021859
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.6
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - Transfers
+  #     abis:
+  #       - name: TroveManagerLiquidations
+  #         file: ./abis/TroveManagerLiquidations.json
+  #       - name: TroveManager
+  #         file: ./abis/TroveManager.json
+  #     eventHandlers:
+  #       - event: TroveUpdated(indexed address,uint256,address[],uint256[],uint8)
+  #         handler: handleTroveUpdated
+  #       - event: Liquidation(uint256,uint256,address[],uint256[],address[],uint256[])
+  #         handler: handleLiquidation
+  #     file: ./src/liquidationMapping.ts
+  # - kind: ethereum/contract
+  #   name: BoostedFarm
+  #   network: avalanche
+  #   source:
+  #     address: '0xD8A4AA01D54C8Fdd104EAC28B9C975f0663E75D8'
+  #     abi: BoostedFarm
+  #     startBlock: 13021859
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.6
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - Transfers
+  #     abis:
+  #       - name: BoostedFarm
+  #         file: ./abis/BoostedFarm.json
+  #       - name: TroveManager
+  #         file: ./abis/TroveManager.json
+  #     eventHandlers:
+  #       - event: Deposit(indexed address,uint256)
+  #         handler: handleDeposit
+  #       - event: Withdraw(indexed address,uint256)
+  #         handler: handleWithdraw
+  #       - event: EmergencyWithdraw(indexed address,uint256)
+  #         handler: handleEmergencyWithdraw
+  #     file: ./src/boostedFarmMapping.ts
+  # - kind: ethereum/contract
+  #   name: YetiController
+  #   network: avalanche
+  #   source:
+  #     address: '0xcCCCcCccCCCc053fD8D1fF275Da4183c2954dBe3'
+  #     abi: YetiController
+  #     startBlock: 13021859
+  #   mapping:
+  #     kind: ethereum/events
+  #     apiVersion: 0.0.6
+  #     language: wasm/assemblyscript
+  #     entities:
+  #       - Transfers
+  #     abis:
+  #       - name: YetiController
+  #         file: ./abis/YetiController.json
+  #     eventHandlers:
+  #       - event: CollateralAdded(address)
+  #         handler: handleCollateralAdded
+  #       - event: CollateralDeprecated(address)
+  #         handler: handleCollateralDeprecated
+  #       - event: CollateralUndeprecated(address)
+  #         handler: handleCollateralUndeprecated
+  #     file: ./src/yetiControllerMapping.ts

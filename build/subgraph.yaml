@@ -1,0 +1,48 @@
+specVersion: 0.0.5
+description: Test Subgraph for Yeti-Fuji
+repository: https://github.com/0xCano/YetiSubgraph
+schema:
+  file: schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: BorrowerOperations
+    network: fuji
+    source:
+      address: "0xBBbbbbbBBBBeC8bF32635374c0717C44B5c535eF"
+      abi: BorrowerOperations
+      startBlock: 10224979
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Transfers
+      abis:
+        - name: BorrowerOperations
+          file: BorrowerOperations/abis/BorrowerOperations.json
+        - name: TroveManager
+          file: BorrowerOperations/abis/TroveManager.json
+      eventHandlers:
+        - event: TroveUpdated(indexed address,uint256,address[],uint256[],uint8)
+          handler: handleTroveUpdated
+      file: BorrowerOperations/BorrowerOperations.wasm
+  - kind: ethereum/contract
+    name: Lever
+    network: fuji
+    source:
+      address: "0x3DF81a574418349707d0B7328935952D69D05892"
+      abi: Lever
+      startBlock: 10224979
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.6
+      language: wasm/assemblyscript
+      entities:
+        - Transfers
+      abis:
+        - name: Lever
+          file: Lever/abis/Lever.json
+      eventHandlers:
+        - event: Swap(address,address,address,uint256,uint256,uint256)
+          handler: handleSwap
+      file: Lever/Lever.wasm
